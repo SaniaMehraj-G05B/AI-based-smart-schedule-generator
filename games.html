@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Games — NEXUS STUDY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanlines"></div>
+  <div class="bg-animated">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon">🧠</div>
+      <span class="brand-name">NEXUS STUDY</span>
+    </a>
+    <div class="navbar-actions">
+      <a href="dashboard.html" class="btn-secondary" style="padding:6px 16px; font-size:0.8rem; text-decoration:none;">📊 Dashboard</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="games-container">
+
+      <!-- Page Header -->
+      <div class="games-header fade-in">
+        <div class="badge badge-green" style="margin-bottom:16px;">☕ BREAK TIME ACTIVITIES</div>
+        <h1 class="section-heading neon-text" style="font-family:var(--font-display); font-size:clamp(1.8rem,5vw,3rem); letter-spacing:3px;">
+          BRAIN BOOST GAMES
+        </h1>
+        <p style="color:var(--text-secondary); max-width:520px; margin:0 auto; font-size:0.95rem; line-height:1.7;">
+          Take a 2–3 minute mental break. These games sharpen focus, improve reaction time,
+          and refresh your mind so you can study harder. 💪
+        </p>
+      </div>
+
+      <!-- Game Cards Grid -->
+      <div class="games-grid">
+
+        <!-- Game 1: Reaction Click -->
+        <div class="glass-card game-card fade-in stagger-1" onclick="openGame('reaction')">
+          <div class="game-icon game-icon-1">⚡</div>
+          <h3 class="game-title" style="color:var(--neon-cyan);">REACTION CLICK</h3>
+          <p class="game-desc">Test how fast your brain can respond. Click when the circle turns green. Train your reflexes!</p>
+          <p class="game-duration">⏱️ ~2 minutes · 5 Rounds</p>
+          <button class="btn-primary" style="font-size:0.75rem; padding:10px 24px;" onclick="event.stopPropagation(); openGame('reaction')">
+            PLAY NOW
+          </button>
+        </div>
+
+        <!-- Game 2: Quick Math -->
+        <div class="glass-card game-card fade-in stagger-2" onclick="openGame('math')">
+          <div class="game-icon game-icon-2">🧮</div>
+          <h3 class="game-title" style="color:var(--neon-purple);">QUICK MATH</h3>
+          <p class="game-desc">Solve rapid arithmetic problems. Choose the right answer in under 5 seconds. Brain gym!</p>
+          <p class="game-duration">⏱️ ~3 minutes · 10 Questions</p>
+          <button class="btn-primary" style="font-size:0.75rem; padding:10px 24px; background:linear-gradient(135deg,var(--neon-purple),var(--neon-pink));" onclick="event.stopPropagation(); openGame('math')">
+            PLAY NOW
+          </button>
+        </div>
+
+        <!-- Game 3: Memory Match -->
+        <div class="glass-card game-card fade-in stagger-3" onclick="openGame('memory')">
+          <div class="game-icon game-icon-3">🃏</div>
+          <h3 class="game-title" style="color:var(--neon-pink);">MEMORY MATCH</h3>
+          <p class="game-desc">Flip cards and find matching pairs. Trains your short-term memory and concentration.</p>
+          <p class="game-duration">⏱️ ~2 minutes · 8 Pairs</p>
+          <button class="btn-primary" style="font-size:0.75rem; padding:10px 24px; background:linear-gradient(135deg,var(--neon-pink),var(--neon-orange));" onclick="event.stopPropagation(); openGame('memory')">
+            PLAY NOW
+          </button>
+        </div>
+
+        <!-- Game 4: Typing Speed -->
+        <div class="glass-card game-card fade-in stagger-4" onclick="openGame('typing')">
+          <div class="game-icon game-icon-4">⌨️</div>
+          <h3 class="game-title" style="color:var(--neon-green);">TYPING SPEED</h3>
+          <p class="game-desc">Type the sentence as fast and accurately as you can. Improve coding & note-taking speed!</p>
+          <p class="game-duration">⏱️ ~2 minutes · WPM Tracked</p>
+          <button class="btn-primary" style="font-size:0.75rem; padding:10px 24px; background:linear-gradient(135deg,var(--neon-green),var(--neon-cyan)); color:#000;" onclick="event.stopPropagation(); openGame('typing')">
+            PLAY NOW
+          </button>
+        </div>
+
+      </div>
+
+      <!-- High Scores -->
+      <div class="glass-card fade-in stagger-5">
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-icon">🏆</span> Your Best Scores
+            </div>
+            <button onclick="clearScores()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.75rem;">Clear All</button>
+          </div>
+          <div id="highScores" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px;">
+            <!-- Scores injected by JS -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       GAME ARENA (Full-Screen Overlay)
+  ══════════════════════════════════ -->
+  <div id="gameArena" class="game-arena">
+
+    <div class="game-arena-header">
+      <span class="game-arena-title" id="arenaTitle">GAME</span>
+      <div class="flex gap-8">
+        <span class="game-score-display" id="arenaScore" style="font-size:0.9rem;"></span>
+        <button class="btn-close-game" onclick="closeGame()">✕ EXIT</button>
+      </div>
+    </div>
+
+    <div class="game-content" id="gameContent">
+      <!-- Game UI injected by JS -->
+    </div>
+
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="script.js"></script>
+
+  <script>
+    /* ════════════════════════════════════════
+       GAMES ENGINE
+    ════════════════════════════════════════ */
+
+    let currentGame = null;
+
+    // Load high scores
+    window.addEventListener('DOMContentLoaded', renderHighScores);
+
+    // ── Open a Game ──
+    function openGame(gameId) {
+      currentGame = gameId;
+      document.getElementById('gameArena').classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      const titles = {
+        reaction: '⚡ REACTION CLICK',
+        math: '🧮 QUICK MATH',
+        memory: '🃏 MEMORY MATCH',
+        typing: '⌨️ TYPING SPEED'
+      };
+      document.getElementById('arenaTitle').textContent = titles[gameId];
+      document.getElementById('arenaScore').textContent = '';
+
+      const gameInits = {
+        reaction: initReactionGame,
+        math: initMathGame,
+        memory: initMemoryGame,
+        typing: initTypingGame
+      };
+      gameInits[gameId]();
+    }
+
+    // ── Close Game ──
+    function closeGame() {
+      currentGame = null;
+      document.getElementById('gameArena').classList.remove('active');
+      document.body.style.overflow = '';
+      document.getElementById('gameContent').innerHTML = '';
+    }
+
+    // ── Save Score ──
+    function saveScore(gameId, score, unit = 'pts') {
+      const scores = JSON.parse(localStorage.getItem('nexus_scores') || '{}');
+      const prev = scores[gameId];
+      if (!prev || score > prev.value) {
+        scores[gameId] = { value: score, unit, date: new Date().toLocaleDateString('en-IN') };
+        localStorage.setItem('nexus_scores', JSON.stringify(scores));
+        showToast(`🏆 New best: ${score}${unit}!`, 'success');
+      }
+      renderHighScores();
+    }
+
+    // ── Render High Scores ──
+    function renderHighScores() {
+      const container = document.getElementById('highScores');
+      const scores = JSON.parse(localStorage.getItem('nexus_scores') || '{}');
+      const games = [
+        { id: 'reaction', name: 'Reaction', icon: '⚡', color: 'var(--neon-cyan)', unit: 'ms' },
+        { id: 'math', name: 'Quick Math', icon: '🧮', color: 'var(--neon-purple)', unit: 'pts' },
+        { id: 'memory', name: 'Memory', icon: '🃏', color: 'var(--neon-pink)', unit: 's' },
+        { id: 'typing', name: 'Typing', icon: '⌨️', color: 'var(--neon-green)', unit: 'wpm' }
+      ];
+
+      container.innerHTML = games.map(g => {
+        const s = scores[g.id];
+        return `
+          <div style="padding:16px; background:rgba(0,0,0,0.25); border:1px solid var(--border-subtle); border-radius:var(--radius-md); text-align:center;">
+            <div style="font-size:1.6rem; margin-bottom:6px;">${g.icon}</div>
+            <div style="font-size:0.75rem; color:var(--text-secondary); font-family:var(--font-mono); margin-bottom:4px;">${g.name}</div>
+            <div style="font-family:var(--font-display); font-size:1.2rem; color:${g.color};">
+              ${s ? `${s.value}${g.unit}` : '—'}
+            </div>
+            ${s ? `<div style="font-size:0.65rem; color:var(--text-muted); margin-top:2px;">${s.date}</div>` : '<div style="font-size:0.7rem;color:var(--text-muted);">Not played yet</div>'}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function clearScores() {
+      localStorage.removeItem('nexus_scores');
+      renderHighScores();
+      showToast('Scores cleared.', 'info');
+    }
+
+    /* ════════════════════
+       GAME 1: REACTION
+    ════════════════════ */
+    function initReactionGame() {
+      let round = 0, totalRounds = 5, results = [], startTime, waiting = false, timer;
+      const maxRounds = totalRounds;
+
+      function render(state = 'idle') {
+        const states = {
+          idle: { label: 'CLICK TO START', css: '' },
+          wait: { label: 'WAIT...', css: '' },
+          ready: { label: 'CLICK NOW!', css: 'ready' },
+          tooEarly: { label: 'TOO EARLY!', css: 'too-early' }
+        };
+        const s = states[state];
+        document.getElementById('gameContent').innerHTML = `
+          <div class="game-score-display" style="margin-bottom:6px;">Round ${round} / ${maxRounds}</div>
+          <div class="game-timer" style="margin-bottom:20px;">
+            ${results.length > 0 ? 'Last: ' + results[results.length-1] + 'ms' : 'Click the circle when it turns green'}
+          </div>
+          <div id="reaction-area" class="game-icon ${s.css}" style="width:200px;height:200px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 28px;font-family:var(--font-display);font-size:0.85rem;letter-spacing:2px;transition:all 0.2s; border:3px solid var(--border-glow);">
+            ${s.label}
+          </div>
+          ${round > 0 ? `<div style="color:var(--text-secondary); font-size:0.85rem;">Avg: ${Math.round(results.reduce((a,b)=>a+b,0)/results.length)}ms</div>` : ''}
+        `;
+        document.getElementById('reaction-area').onclick = handleClick;
+      }
+
+      function handleClick() {
+        if (waiting) {
+          // Too early!
+          clearTimeout(timer);
+          waiting = false;
+          render('tooEarly');
+          setTimeout(() => startRound(), 1500);
+          return;
+        }
+        if (round === 0) { startRound(); return; }
+      }
+
+      function startRound() {
+        round++;
+        if (round > maxRounds) { endGame(); return; }
+        waiting = false;
+        render('wait');
+        const delay = 1000 + Math.random() * 3000;
+        timer = setTimeout(() => {
+          startTime = Date.now();
+          waiting = false;
+          const area = document.getElementById('reaction-area');
+          area.className = 'ready';
+          area.textContent = 'CLICK!';
+          area.style.cssText = 'width:200px;height:200px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto 28px;font-family:var(--font-display);font-size:0.85rem;letter-spacing:2px;background:rgba(57,255,20,0.15);border:3px solid var(--neon-green);color:var(--neon-green);box-shadow:0 0 40px rgba(57,255,20,0.4);';
+          area.onclick = () => {
+            const rt = Date.now() - startTime;
+            results.push(rt);
+            document.getElementById('arenaScore').textContent = `${rt}ms`;
+            render('idle');
+            setTimeout(() => { if (round < maxRounds) startRound(); else endGame(); }, 800);
+          };
+        }, delay);
+
+        waiting = true;
+        document.getElementById('reaction-area').onclick = handleClick;
+      }
+
+      function endGame() {
+        const avg = Math.round(results.reduce((a,b)=>a+b,0)/results.length);
+        document.getElementById('gameContent').innerHTML = `
+          <div style="text-align:center; padding:20px;">
+            <div style="font-size:3rem; margin-bottom:16px;">⚡</div>
+            <div class="section-heading neon-text" style="font-family:var(--font-display);">GAME OVER</div>
+            <div style="font-family:var(--font-display); font-size:2.5rem; color:var(--neon-cyan); margin:20px 0;">${avg}<span style="font-size:1rem; color:var(--text-muted);">ms avg</span></div>
+            <div style="color:var(--text-secondary); margin-bottom:24px; font-size:0.9rem;">
+              ${avg < 200 ? '🔥 Lightning fast!' : avg < 300 ? '⚡ Great reaction!' : avg < 400 ? '👍 Good effort!' : '💪 Keep practicing!'}
+            </div>
+            <button class="btn-primary" onclick="initReactionGame()" style="margin-right:12px;">Play Again</button>
+            <button class="btn-secondary" onclick="closeGame()">Back to Games</button>
+          </div>
+        `;
+        saveScore('reaction', avg, 'ms');
+      }
+
+      render('idle');
+    }
+
+    /* ════════════════════
+       GAME 2: QUICK MATH
+    ════════════════════ */
+    function initMathGame() {
+      let question = 0, score = 0, totalQuestions = 10;
+      let countdown, questionTimer;
+
+      function nextQuestion() {
+        question++;
+        if (question > totalQuestions) { endGame(); return; }
+
+        // Generate a random math problem
+        const ops = ['+', '-', '×'];
+        const op = ops[Math.floor(Math.random() * ops.length)];
+        let a, b, answer;
+        if (op === '+') { a = Math.floor(Math.random()*50)+1; b = Math.floor(Math.random()*50)+1; answer = a+b; }
+        else if (op === '-') { a = Math.floor(Math.random()*50)+20; b = Math.floor(Math.random()*a); answer = a-b; }
+        else { a = Math.floor(Math.random()*12)+1; b = Math.floor(Math.random()*12)+1; answer = a*b; }
+
+        // Generate wrong options
+        const opts = new Set([answer]);
+        while (opts.size < 4) {
+          const fake = answer + (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random()*15)+1);
+          if (fake !== answer && fake > 0) opts.add(fake);
+        }
+        const shuffled = [...opts].sort(() => Math.random()-0.5);
+        let timeLeft = 5;
+
+        function renderQ() {
+          document.getElementById('gameContent').innerHTML = `
+            <div class="game-score-display" style="margin-bottom:4px;">Score: ${score} / ${question-1}</div>
+            <div class="game-timer">Question ${question} of ${totalQuestions} · ⏱️ ${timeLeft}s</div>
+            <div class="math-display">${a} ${op} ${b} = ?</div>
+            <div class="math-options">
+              ${shuffled.map(opt => `
+                <button class="math-option" onclick="checkAnswer(${opt}, ${answer})">${opt}</button>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        renderQ();
+        clearInterval(countdown);
+        countdown = setInterval(() => {
+          timeLeft--;
+          if (timeLeft < 0) { clearInterval(countdown); nextQuestion(); }
+          else {
+            const timerEl = document.querySelector('.game-timer');
+            if (timerEl) timerEl.textContent = `Question ${question} of ${totalQuestions} · ⏱️ ${timeLeft}s`;
+          }
+        }, 1000);
+      }
+
+      window.checkAnswer = function(selected, correct) {
+        clearInterval(countdown);
+        const btns = document.querySelectorAll('.math-option');
+        btns.forEach(btn => {
+          btn.onclick = null;
+          if (parseInt(btn.textContent) === correct) btn.classList.add('correct');
+          if (parseInt(btn.textContent) === selected && selected !== correct) btn.classList.add('wrong');
+        });
+        if (selected === correct) { score++; }
+        document.getElementById('arenaScore').textContent = `Score: ${score}`;
+        setTimeout(nextQuestion, 700);
+      };
+
+      function endGame() {
+        clearInterval(countdown);
+        const pct = Math.round((score / totalQuestions) * 100);
+        document.getElementById('gameContent').innerHTML = `
+          <div style="text-align:center; padding:20px;">
+            <div style="font-size:3rem; margin-bottom:16px;">🧮</div>
+            <div class="section-heading neon-text" style="font-family:var(--font-display);">GAME OVER</div>
+            <div style="font-family:var(--font-display); font-size:2.5rem; color:var(--neon-purple); margin:20px 0;">${score}<span style="font-size:1rem; color:var(--text-muted);">/ ${totalQuestions}</span></div>
+            <div style="color:var(--text-secondary); margin-bottom:24px;">${pct >= 80 ? '🏆 Math genius!' : pct >= 60 ? '⭐ Well done!' : '📚 Keep practicing!'}</div>
+            <button class="btn-primary" onclick="initMathGame()" style="margin-right:12px;">Play Again</button>
+            <button class="btn-secondary" onclick="closeGame()">Back to Games</button>
+          </div>
+        `;
+        saveScore('math', score, 'pts');
+      }
+
+      nextQuestion();
+    }
+
+    /* ════════════════════
+       GAME 3: MEMORY MATCH
+    ════════════════════ */
+    function initMemoryGame() {
+      const emojis = ['🔥','⚡','🎯','🚀','💡','🎮','🧠','🌟'];
+      const cards = [...emojis, ...emojis].sort(() => Math.random()-0.5);
+      let flipped = [], matched = 0, moves = 0, startTime = Date.now(), canFlip = true;
+
+      function renderGrid() {
+        document.getElementById('gameContent').innerHTML = `
+          <div class="game-score-display" style="margin-bottom:4px;">Matches: ${matched} / ${emojis.length}</div>
+          <div class="game-timer" style="margin-bottom:20px;">Moves: ${moves}</div>
+          <div class="memory-grid" id="memoryGrid">
+            ${cards.map((emoji, i) => `
+              <div class="memory-card${flipped.includes(i) || isMatched(i) ? ' flipped' : ''}${isMatched(i) ? ' matched' : ''}"
+                   id="mc-${i}" onclick="flipMemoryCard(${i})">
+                <div class="memory-card-face memory-card-back">❓</div>
+                <div class="memory-card-face memory-card-front">${emoji}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      // Track matched pairs
+      const matchedIndices = new Set();
+      function isMatched(i) { return matchedIndices.has(i); }
+
+      window.flipMemoryCard = function(i) {
+        if (!canFlip || flipped.includes(i) || matchedIndices.has(i)) return;
+        flipped.push(i);
+        moves++;
+        renderGrid();
+
+        if (flipped.length === 2) {
+          canFlip = false;
+          const [a, b] = flipped;
+          if (cards[a] === cards[b]) {
+            matchedIndices.add(a); matchedIndices.add(b);
+            matched++;
+            flipped = [];
+            canFlip = true;
+            renderGrid();
+            if (matched === emojis.length) endGame();
+          } else {
+            setTimeout(() => {
+              flipped = [];
+              canFlip = true;
+              renderGrid();
+            }, 900);
+          }
+        }
+      };
+
+      function endGame() {
+        const timeTaken = Math.round((Date.now() - startTime) / 1000);
+        document.getElementById('gameContent').innerHTML = `
+          <div style="text-align:center; padding:20px;">
+            <div style="font-size:3rem; margin-bottom:16px;">🎉</div>
+            <div class="section-heading neon-text" style="font-family:var(--font-display);">YOU WIN!</div>
+            <div style="font-family:var(--font-display); font-size:2.5rem; color:var(--neon-pink); margin:20px 0;">${timeTaken}<span style="font-size:1rem; color:var(--text-muted);">s</span></div>
+            <div style="color:var(--text-secondary); margin-bottom:8px;">Completed in ${moves} moves</div>
+            <div style="color:var(--text-secondary); margin-bottom:24px;">${timeTaken < 30 ? '🔥 Incredible memory!' : timeTaken < 60 ? '⭐ Great job!' : '💪 Nice try!'}</div>
+            <button class="btn-primary" onclick="initMemoryGame()" style="margin-right:12px;">Play Again</button>
+            <button class="btn-secondary" onclick="closeGame()">Back to Games</button>
+          </div>
+        `;
+        saveScore('memory', timeTaken, 's');
+      }
+
+      renderGrid();
+    }
+
+    /* ════════════════════
+       GAME 4: TYPING SPEED
+    ════════════════════ */
+    function initTypingGame() {
+      const sentences = [
+        "The quick brown fox jumps over the lazy dog in the bright sunny morning.",
+        "Practice makes perfect when you study with focus and determination every day.",
+        "Artificial intelligence is transforming the way students learn and grow.",
+        "A smart study schedule helps you maximize productivity and reduce stress.",
+        "Code is poetry written by programmers who dare to dream and build the future."
+      ];
+      const text = sentences[Math.floor(Math.random() * sentences.length)];
+      let typed = '', startTime = null, finished = false;
+
+      function renderTyping() {
+        const chars = text.split('').map((ch, i) => {
+          let cls = 'typing-char';
+          if (i < typed.length) cls += typed[i] === ch ? ' correct' : ' wrong';
+          else if (i === typed.length) cls += ' current';
+          return `<span class="${cls}">${ch === ' ' ? '&nbsp;' : ch}</span>`;
+        }).join('');
+
+        const wpm = startTime
+          ? Math.round((typed.split(' ').filter(Boolean).length / ((Date.now()-startTime)/60000)))
+          : 0;
+
+        document.getElementById('gameContent').innerHTML = `
+          <div class="game-score-display" style="margin-bottom:4px;">${startTime ? wpm + ' WPM' : 'Start typing...'}</div>
+          <div class="game-timer" style="margin-bottom:14px;">Type the text below</div>
+          <div class="typing-text" style="font-family:var(--font-mono);font-size:1rem;line-height:2;margin-bottom:16px;padding:18px;background:rgba(0,0,0,0.3);border-radius:var(--radius-md);border:1px solid var(--border-subtle);text-align:left;">${chars}</div>
+          <input type="text" id="typingInput" class="form-input" placeholder="Start typing here..." style="text-align:left;" oninput="handleTyping(this.value)" autocomplete="off" autocorrect="off" spellcheck="false" />
+        `;
+        setTimeout(() => document.getElementById('typingInput')?.focus(), 50);
+      }
+
+      window.handleTyping = function(val) {
+        if (finished) return;
+        if (!startTime) startTime = Date.now();
+        typed = val;
+
+        // Check completion
+        if (typed === text) {
+          finished = true;
+          const timeSec = Math.round((Date.now()-startTime)/1000);
+          const words = text.split(' ').length;
+          const wpm = Math.round((words / timeSec) * 60);
+          document.getElementById('gameContent').innerHTML = `
+            <div style="text-align:center; padding:20px;">
+              <div style="font-size:3rem; margin-bottom:16px;">⌨️</div>
+              <div class="section-heading neon-text" style="font-family:var(--font-display);">DONE!</div>
+              <div style="font-family:var(--font-display); font-size:2.5rem; color:var(--neon-green); margin:20px 0;">${wpm}<span style="font-size:1rem; color:var(--text-muted);"> WPM</span></div>
+              <div style="color:var(--text-secondary); margin-bottom:8px;">Completed in ${timeSec} seconds</div>
+              <div style="color:var(--text-secondary); margin-bottom:24px;">${wpm > 60 ? '🚀 Speed typist!' : wpm > 40 ? '⭐ Good pace!' : '💪 Keep practicing!'}</div>
+              <button class="btn-primary" onclick="initTypingGame()" style="margin-right:12px;">Play Again</button>
+              <button class="btn-secondary" onclick="closeGame()">Back to Games</button>
+            </div>
+          `;
+          saveScore('typing', wpm, 'wpm');
+          return;
+        }
+
+        renderTyping();
+      };
+
+      renderTyping();
+    }
+
+  </script>
+
+</body>
+</html>

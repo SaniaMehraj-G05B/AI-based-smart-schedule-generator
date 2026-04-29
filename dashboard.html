@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — NEXUS STUDY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanlines"></div>
+  <div class="bg-animated">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon">🧠</div>
+      <span class="brand-name">NEXUS STUDY</span>
+    </a>
+    <div class="navbar-actions">
+      <span class="nav-user-name" id="navUserName"></span>
+      <a href="games.html" class="btn-secondary" style="padding:6px 16px; font-size:0.8rem; text-decoration:none;">🎮 Games</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+      <button class="btn-logout" onclick="handleLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="dashboard-container">
+
+      <!-- Hero Card -->
+      <div class="glass-card dashboard-hero fade-in">
+        <div>
+          <p class="hero-greeting">// WELCOME BACK, STUDENT</p>
+          <h1 class="hero-name neon-text" id="heroName">Loading...</h1>
+          <p class="hero-date" id="heroDate"></p>
+          <div class="flex gap-8 mt-16" style="flex-wrap:wrap;" id="heroBadges">
+            <!-- badges injected by JS -->
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <div class="stat-pill-value neon-text" id="statTotal">—</div>
+            <div class="stat-pill-label">Total Tasks</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-value" id="statDone" style="color:var(--neon-green)">0</div>
+            <div class="stat-pill-label">Done Today</div>
+          </div>
+          <div class="stat-pill">
+            <div class="stat-pill-value" id="statSubjects" style="color:var(--neon-purple)">—</div>
+            <div class="stat-pill-label">Subjects</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress + Score row -->
+      <div class="dashboard-grid-3 fade-in stagger-1">
+
+        <!-- Daily Progress -->
+        <div class="glass-card" style="grid-column: span 2;">
+          <div class="card-inner">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📈</span> Daily Progress
+              </div>
+              <span id="progressPercent" style="font-family:var(--font-display);font-size:0.9rem;color:var(--neon-cyan);">0%</span>
+            </div>
+            <div class="progress-bar-wrapper" style="margin-bottom:16px;">
+              <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.8rem; color:var(--text-secondary);">
+              <span>🟦 Study slots completed</span>
+              <span>🟩 Breaks logged</span>
+              <span style="font-family:var(--font-mono); color:var(--neon-cyan);" id="progressDetail"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Efficiency Score -->
+        <div class="glass-card">
+          <div class="card-inner" style="padding-bottom:16px;">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">⚡</span> Weekly Score
+              </div>
+            </div>
+            <div class="score-ring-area">
+              <div class="score-ring">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                  <defs>
+                    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#00f5ff"/>
+                      <stop offset="100%" stop-color="#a855f7"/>
+                    </linearGradient>
+                  </defs>
+                  <circle class="score-ring-bg" cx="60" cy="60" r="50"/>
+                  <circle class="score-ring-fill" id="scoreRing" cx="60" cy="60" r="50"/>
+                </svg>
+                <div class="score-ring-text">
+                  <span class="score-value neon-text" id="scoreValue">0</span>
+                  <span class="score-label">/ 100</span>
+                </div>
+              </div>
+              <p style="font-size:0.75rem; color:var(--text-secondary); margin-top:12px; text-align:center; font-family:var(--font-mono);">Efficiency Score</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Timetable + Checklist -->
+      <div class="dashboard-grid fade-in stagger-2">
+
+        <!-- Today's Timetable -->
+        <div class="glass-card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">📅</span> Today's AI Timetable
+              </div>
+              <button onclick="regenerateSchedule()" style="background:transparent; border:1px solid var(--border-glow); color:var(--neon-cyan); padding:4px 12px; border-radius:6px; cursor:pointer; font-size:0.75rem; transition:all 0.3s;">
+                🔄 Regenerate
+              </button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="timetable" id="timetable">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Activity</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                  </tr>
+                </thead>
+                <tbody id="timetableBody">
+                  <!-- Rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Checklist -->
+        <div class="glass-card">
+          <div class="card-inner">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="card-title-icon">✅</span> Task Checklist
+              </div>
+              <button onclick="clearChecklist()" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-size:0.75rem;">
+                Reset
+              </button>
+            </div>
+            <div id="taskChecklist">
+              <!-- Tasks injected by JS -->
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:16px; font-family:var(--font-mono);">
+              Click a task to mark as complete ✓
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Subject Overview -->
+      <div class="glass-card fade-in stagger-3">
+        <div class="card-inner">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="card-title-icon">📚</span> Subject Overview
+            </div>
+            <span style="font-size:0.8rem; color:var(--text-secondary);" id="courseLabel"></span>
+          </div>
+          <div id="subjectOverview" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:14px;">
+            <!-- Subject cards injected by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Reminder Panel -->
+      <div class="glass-card fade-in stagger-4" style="margin-top:0;">
+        <div class="card-inner">
+          <div class="flex-between">
+            <div class="card-title">
+              <span class="card-title-icon">🔔</span> Reminder System
+            </div>
+            <div class="flex gap-8">
+              <button onclick="enableReminders()" class="btn-primary" style="padding:8px 20px; font-size:0.75rem;">
+                Enable Smart Reminders
+              </button>
+              <a href="games.html" class="btn-secondary" style="padding:8px 20px; font-size:0.8rem; text-decoration:none; border-radius:var(--radius-md);">
+                🎮 Take a Break
+              </a>
+            </div>
+          </div>
+          <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:16px;" id="nextReminderText">
+            Click "Enable Smart Reminders" to activate study alerts based on your timetable.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="script.js"></script>
+
+  <script>
+    /* ════════════════════════════════
+       DASHBOARD LOGIC
+    ════════════════════════════════ */
+
+    let user, setup, schedule, progress;
+
+    // ── On Page Load ──
+    window.addEventListener('DOMContentLoaded', () => {
+      // Auth guard
+      user = JSON.parse(localStorage.getItem('nexus_user'));
+      setup = JSON.parse(localStorage.getItem('nexus_setup'));
+
+      if (!user || !setup) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      schedule = JSON.parse(localStorage.getItem('nexus_schedule')) || [];
+      progress = JSON.parse(localStorage.getItem('nexus_progress')) || {};
+
+      populateDashboard();
+    });
+
+    // ── Populate All Dashboard Sections ──
+    function populateDashboard() {
+      // Nav user name
+      document.getElementById('navUserName').textContent = `// ${user.name}`;
+
+      // Hero section
+      document.getElementById('heroName').textContent = user.name.toUpperCase();
+
+      const now = new Date();
+      document.getElementById('heroDate').textContent =
+        now.toLocaleDateString('en-IN', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+      // Badges
+      const badgesEl = document.getElementById('heroBadges');
+      badgesEl.innerHTML = `
+        <div class="badge badge-cyan">${setup.course}</div>
+        <div class="badge badge-purple">${setup.subjects.length} Subjects</div>
+        <div class="badge badge-green">${setup.studyHours}h Study/Day</div>
+        <div class="badge badge-pink">⚡ AI Optimized</div>
+      `;
+
+      // Stats
+      const studySlots = schedule.filter(s => s.type === 'study');
+      document.getElementById('statTotal').textContent = studySlots.length;
+      document.getElementById('statSubjects').textContent = setup.subjects.length;
+      document.getElementById('courseLabel').textContent = setup.course;
+
+      // Render timetable
+      renderTimetable();
+
+      // Render checklist
+      renderChecklist();
+
+      // Render subject overview
+      renderSubjectOverview();
+
+      // Update score & progress
+      updateProgress();
+    }
+
+    // ── Render Timetable ──
+    function renderTimetable() {
+      const tbody = document.getElementById('timetableBody');
+      tbody.innerHTML = '';
+
+      schedule.forEach((slot, i) => {
+        const tr = document.createElement('tr');
+        tr.style.animationDelay = `${i * 0.04}s`;
+        tr.className = 'fade-in';
+
+        const typeClass = {
+          study: 'slot-study',
+          break: 'slot-break',
+          revision: 'slot-revision',
+          college: 'slot-college'
+        }[slot.type] || 'slot-study';
+
+        const typeLabel = {
+          study: '📘 Study',
+          break: '☕ Break',
+          revision: '🔁 Revision',
+          college: '🏫 College'
+        }[slot.type] || slot.type;
+
+        const done = progress[`slot_${i}`];
+        tr.style.opacity = done ? '0.5' : '1';
+
+        tr.innerHTML = `
+          <td style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-secondary);">${slot.time}</td>
+          <td style="font-weight:500;">${slot.activity}</td>
+          <td><span class="slot-type ${typeClass}">${typeLabel}</span></td>
+          <td style="font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted);">${slot.duration}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ── Render Task Checklist ──
+    function renderChecklist() {
+      const container = document.getElementById('taskChecklist');
+      container.innerHTML = '';
+
+      // Only show study + revision slots as tasks
+      const tasks = schedule.filter(s => s.type === 'study' || s.type === 'revision');
+
+      tasks.forEach((slot, i) => {
+        const taskId = `task_${i}`;
+        const done = progress[taskId];
+        const div = document.createElement('div');
+        div.className = `task-item${done ? ' completed' : ''}`;
+        div.onclick = () => toggleTask(taskId, div);
+        div.innerHTML = `
+          <div class="task-checkbox">${done ? '✓' : ''}</div>
+          <div style="flex:1;">
+            <div class="task-label" style="font-weight:500; font-size:0.9rem;">${slot.activity}</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${slot.time} · ${slot.duration}</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      updateProgress();
+    }
+
+    // ── Toggle Task ──
+    function toggleTask(taskId, element) {
+      progress[taskId] = !progress[taskId];
+      localStorage.setItem('nexus_progress', JSON.stringify(progress));
+      element.classList.toggle('completed');
+      const checkbox = element.querySelector('.task-checkbox');
+      checkbox.textContent = progress[taskId] ? '✓' : '';
+      updateProgress();
+    }
+
+    // ── Update Progress Bar & Score ──
+    function updateProgress() {
+      const tasks = schedule.filter(s => s.type === 'study' || s.type === 'revision');
+      const done = tasks.filter((_, i) => progress[`task_${i}`]).length;
+      const total = tasks.length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById('progressBar').style.width = `${pct}%`;
+      document.getElementById('progressPercent').textContent = `${pct}%`;
+      document.getElementById('progressDetail').textContent = `${done} / ${total} tasks done`;
+      document.getElementById('statDone').textContent = done;
+
+      // Efficiency score: weighted combo of today's tasks + simulated weekly avg
+      const savedScore = parseInt(localStorage.getItem('nexus_weekly_score') || '0');
+      const todayScore = pct;
+      const weeklyScore = Math.round((savedScore * 0.6) + (todayScore * 0.4));
+      localStorage.setItem('nexus_weekly_score', weeklyScore);
+
+      document.getElementById('scoreValue').textContent = weeklyScore;
+
+      // Animate score ring (circumference of r=50 → 2πr ≈ 314)
+      const dashOffset = 314 - (314 * weeklyScore / 100);
+      document.getElementById('scoreRing').style.strokeDashoffset = dashOffset;
+    }
+
+    // ── Render Subject Overview Cards ──
+    function renderSubjectOverview() {
+      const container = document.getElementById('subjectOverview');
+      container.innerHTML = '';
+      const colors = [
+        { bg: 'rgba(0,245,255,0.08)', border: 'rgba(0,245,255,0.2)', text: 'var(--neon-cyan)' },
+        { bg: 'rgba(168,85,247,0.08)', border: 'rgba(168,85,247,0.2)', text: 'var(--neon-purple)' },
+        { bg: 'rgba(247,37,133,0.08)', border: 'rgba(247,37,133,0.2)', text: 'var(--neon-pink)' },
+        { bg: 'rgba(57,255,20,0.08)', border: 'rgba(57,255,20,0.2)', text: 'var(--neon-green)' },
+        { bg: 'rgba(255,107,53,0.08)', border: 'rgba(255,107,53,0.2)', text: 'var(--neon-orange)' },
+      ];
+
+      setup.subjects.forEach((sub, i) => {
+        const c = colors[i % colors.length];
+        // Count study slots for this subject
+        const slots = schedule.filter(s => s.activity && s.activity.includes(sub));
+        const totalMinutes = slots.reduce((acc, s) => {
+          const m = parseInt(s.duration) || 0;
+          return acc + m;
+        }, 0);
+
+        const div = document.createElement('div');
+        div.style.cssText = `
+          background: ${c.bg};
+          border: 1px solid ${c.border};
+          border-radius: var(--radius-md);
+          padding: 18px;
+          transition: all 0.3s;
+        `;
+        div.innerHTML = `
+          <div style="font-family:var(--font-display); font-size:0.8rem; letter-spacing:1px; color:${c.text}; margin-bottom:6px;">
+            ${sub.toUpperCase()}
+          </div>
+          <div style="font-size:0.78rem; color:var(--text-secondary);">
+            ${slots.length} slot${slots.length !== 1 ? 's' : ''} scheduled
+          </div>
+          <div style="font-size:0.72rem; color:var(--text-muted); font-family:var(--font-mono); margin-top:4px;">
+            ~${totalMinutes} min / day
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // ── Clear All Task Progress ──
+    function clearChecklist() {
+      progress = {};
+      localStorage.setItem('nexus_progress', JSON.stringify(progress));
+      renderChecklist();
+      showToast('Progress reset for today.', 'info');
+    }
+
+    // ── Regenerate Schedule ──
+    function regenerateSchedule() {
+      const newSchedule = generateAISchedule(setup);
+      localStorage.setItem('nexus_schedule', JSON.stringify(newSchedule));
+      schedule = newSchedule;
+      progress = {};
+      localStorage.setItem('nexus_progress', JSON.stringify(progress));
+      renderTimetable();
+      renderChecklist();
+      renderSubjectOverview();
+      updateProgress();
+      showToast('🔄 Schedule regenerated!', 'success');
+    }
+
+    // ── Logout ──
+    function handleLogout() {
+      if (confirm('Are you sure you want to logout? Your progress will be saved.')) {
+        window.location.href = 'index.html';
+      }
+    }
+
+    // ── Reminder System ──
+    let reminderInterval;
+    function enableReminders() {
+      if (!('Notification' in window)) {
+        showToast('Notifications not supported in this browser.', 'warning');
+        return;
+      }
+      Notification.requestPermission().then(perm => {
+        if (perm === 'granted') {
+          showToast('🔔 Smart reminders enabled!', 'success');
+          scheduleReminders();
+        } else {
+          // Fallback to alert-based
+          startAlertReminders();
+        }
+      });
+    }
+
+    function scheduleReminders() {
+      // Find next upcoming slot based on current time
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMin = now.getMinutes();
+      const currentTotal = currentHour * 60 + currentMin;
+
+      const upcomingSlot = schedule.find(slot => {
+        const [h, m] = slot.time.split(':').map(Number);
+        const slotTotal = h * 60 + m;
+        return slotTotal > currentTotal && slot.type === 'study';
+      });
+
+      if (upcomingSlot) {
+        document.getElementById('nextReminderText').innerHTML =
+          `Next reminder: <span style="color:var(--neon-cyan);font-family:var(--font-mono);">${upcomingSlot.time} — ${upcomingSlot.activity}</span>`;
+
+        // Set a repeating check every minute
+        clearInterval(reminderInterval);
+        reminderInterval = setInterval(() => checkAndNotify(), 60000);
+      } else {
+        document.getElementById('nextReminderText').textContent = 'All study slots for today are past. Good job! 🎉';
+      }
+    }
+
+    function checkAndNotify() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const currentTime = `${hh}:${mm}`;
+
+      schedule.forEach(slot => {
+        if (slot.time === currentTime && slot.type === 'study') {
+          new Notification('⚡ NEXUS STUDY Reminder', {
+            body: `Time to study: ${slot.activity}! (${slot.duration})`,
+            icon: '🧠'
+          });
+        }
+      });
+    }
+
+    function startAlertReminders() {
+      // Fallback: toast-based reminder every 45 minutes
+      showToast('📢 Reminder: Stay on your study schedule!', 'info');
+      setInterval(() => {
+        showToast('⏰ Study reminder: Check your timetable!', 'info');
+      }, 45 * 60 * 1000);
+    }
+  </script>
+
+</body>
+</html>

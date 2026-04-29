@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup — NEXUS STUDY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanlines"></div>
+  <div class="bg-animated">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon">🧠</div>
+      <span class="brand-name">NEXUS STUDY</span>
+    </a>
+    <div class="navbar-actions">
+      <span class="nav-user-name" id="navUserName"></span>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="setup-container">
+      <div class="glass-card setup-card fade-in">
+
+        <!-- Header -->
+        <div class="setup-header">
+          <div class="step-indicator">
+            <div class="step done">
+              <div class="step-circle">✓</div>
+              <span style="font-size:0.75rem; color:var(--neon-green); font-family:var(--font-mono);">LOGIN</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step active">
+              <div class="step-circle">2</div>
+              <span style="font-size:0.75rem; color:var(--neon-cyan); font-family:var(--font-mono);">SETUP</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+              <div class="step-circle">3</div>
+              <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">DASHBOARD</span>
+            </div>
+          </div>
+
+          <h2 class="section-heading neon-text">Configure Your Profile</h2>
+          <p class="section-subheading">Tell the AI about your schedule so it can build the perfect study plan.</p>
+        </div>
+
+        <form id="setupForm" onsubmit="handleSetup(event)">
+
+          <!-- 1. Course -->
+          <div class="form-group fade-in stagger-1">
+            <label class="form-label" for="course">🎓 Course / Program</label>
+            <select id="course" class="form-select" required>
+              <option value="">— Select your course —</option>
+              <option value="B.Tech">B.Tech (Engineering)</option>
+              <option value="BCA">BCA (Computer Applications)</option>
+              <option value="BBA">BBA (Business Administration)</option>
+              <option value="B.Sc">B.Sc (Science)</option>
+              <option value="B.Com">B.Com (Commerce)</option>
+              <option value="MBA">MBA</option>
+              <option value="MCA">MCA</option>
+              <option value="12th">12th Standard</option>
+              <option value="10th">10th Standard</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <!-- 2. Subjects -->
+          <div class="form-group fade-in stagger-2">
+            <label class="form-label">📚 Subjects (Add all your subjects)</label>
+            <div class="subjects-container" id="subjectsContainer">
+              <!-- Subject rows will be added here by JS -->
+            </div>
+            <button type="button" class="btn-add-subject" onclick="addSubjectRow()">
+              ➕ Add Another Subject
+            </button>
+          </div>
+
+          <!-- 3. College Timing -->
+          <div class="form-group fade-in stagger-3">
+            <label class="form-label">🏫 College / School Timing</label>
+            <div class="time-grid">
+              <div>
+                <label class="form-label" for="collegeStart" style="font-size:0.65rem; margin-bottom:4px;">Start Time</label>
+                <input type="time" id="collegeStart" class="form-input" value="09:00" required />
+              </div>
+              <div>
+                <label class="form-label" for="collegeEnd" style="font-size:0.65rem; margin-bottom:4px;">End Time</label>
+                <input type="time" id="collegeEnd" class="form-input" value="17:00" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Sleep Schedule -->
+          <div class="form-group fade-in stagger-3">
+            <label class="form-label">😴 Sleep Schedule</label>
+            <div class="time-grid">
+              <div>
+                <label class="form-label" for="sleepTime" style="font-size:0.65rem; margin-bottom:4px;">Sleep Time</label>
+                <input type="time" id="sleepTime" class="form-input" value="23:00" required />
+              </div>
+              <div>
+                <label class="form-label" for="wakeTime" style="font-size:0.65rem; margin-bottom:4px;">Wake Time</label>
+                <input type="time" id="wakeTime" class="form-input" value="06:00" required />
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Study Hours -->
+          <div class="form-group fade-in stagger-4">
+            <label class="form-label" for="studyHours">
+              ⏱️ Available Self-Study Hours Per Day
+            </label>
+            <select id="studyHours" class="form-select" required>
+              <option value="">— Select hours —</option>
+              <option value="2">2 hours</option>
+              <option value="3">3 hours</option>
+              <option value="4">4 hours</option>
+              <option value="5">5 hours</option>
+              <option value="6">6 hours</option>
+              <option value="7">7 hours</option>
+              <option value="8">8 hours</option>
+            </select>
+          </div>
+
+          <!-- 6. Study Preference -->
+          <div class="form-group fade-in stagger-4">
+            <label class="form-label" for="studyPreference">⚡ Study Session Preference</label>
+            <select id="studyPreference" class="form-select">
+              <option value="morning">Morning Focused (Wake up + study first)</option>
+              <option value="evening">Evening Focused (After college)</option>
+              <option value="balanced">Balanced (Split morning & evening)</option>
+            </select>
+          </div>
+
+          <!-- Submit -->
+          <div class="fade-in stagger-5">
+            <button type="submit" class="btn-primary w-full" style="padding: 16px; font-size: 0.9rem; margin-top:8px;">
+              🧠 GENERATE MY AI SCHEDULE
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+  <script src="script.js"></script>
+
+  <script>
+    // ── Auth Guard ──
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('nexus_user'));
+      if (!user) { window.location.href = 'index.html'; return; }
+
+      // Show user name in nav
+      document.getElementById('navUserName').textContent = `// ${user.name}`;
+
+      // Pre-fill 3 subject rows
+      addSubjectRow('Data Structures');
+      addSubjectRow('Mathematics');
+      addSubjectRow('');
+    });
+
+    // ── Add Subject Input Row ──
+    let subjectCount = 0;
+
+    function addSubjectRow(defaultValue = '') {
+      subjectCount++;
+      const container = document.getElementById('subjectsContainer');
+      const row = document.createElement('div');
+      row.className = 'subject-row fade-in';
+      row.id = `subject-row-${subjectCount}`;
+      row.innerHTML = `
+        <input
+          type="text"
+          class="form-input subject-input"
+          placeholder="Subject name (e.g. Physics, Java, etc.)"
+          value="${defaultValue}"
+        />
+        <button type="button" class="btn-remove-subject" onclick="removeSubjectRow('subject-row-${subjectCount}')" title="Remove">✕</button>
+      `;
+      container.appendChild(row);
+    }
+
+    function removeSubjectRow(id) {
+      const rows = document.querySelectorAll('.subject-row');
+      if (rows.length <= 1) {
+        showToast('You need at least one subject!', 'warning');
+        return;
+      }
+      const row = document.getElementById(id);
+      row.style.opacity = '0';
+      row.style.transform = 'translateX(-20px)';
+      setTimeout(() => row.remove(), 300);
+    }
+
+    // ── Handle Setup Form Submission ──
+    function handleSetup(event) {
+      event.preventDefault();
+
+      // Collect subjects
+      const subjects = [];
+      document.querySelectorAll('.subject-input').forEach(input => {
+        const val = input.value.trim();
+        if (val) subjects.push(val);
+      });
+
+      if (subjects.length === 0) {
+        showToast('Please add at least one subject!', 'error');
+        return;
+      }
+
+      const setupData = {
+        course: document.getElementById('course').value,
+        subjects: subjects,
+        collegeStart: document.getElementById('collegeStart').value,
+        collegeEnd: document.getElementById('collegeEnd').value,
+        sleepTime: document.getElementById('sleepTime').value,
+        wakeTime: document.getElementById('wakeTime').value,
+        studyHours: parseInt(document.getElementById('studyHours').value),
+        studyPreference: document.getElementById('studyPreference').value,
+        createdAt: new Date().toISOString()
+      };
+
+      // Save to LocalStorage
+      localStorage.setItem('nexus_setup', JSON.stringify(setupData));
+
+      // Generate the AI schedule and save it
+      const schedule = generateAISchedule(setupData);
+      localStorage.setItem('nexus_schedule', JSON.stringify(schedule));
+      localStorage.setItem('nexus_progress', JSON.stringify({}));
+
+      showToast('AI Schedule Generated! Redirecting...', 'success');
+
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+  </script>
+
+</body>
+</html>

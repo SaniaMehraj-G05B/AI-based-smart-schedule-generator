@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS STUDY — AI Smart Schedule Generator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Scanline effect overlay -->
+  <div class="scanlines"></div>
+
+  <!-- Animated Background -->
+  <div class="bg-animated">
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+    <div class="bg-grid"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="navbar-brand">
+      <div class="brand-icon">🧠</div>
+      <span class="brand-name">NEXUS STUDY</span>
+    </a>
+    <div class="navbar-actions">
+      <!-- Theme Toggle button -->
+      <button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode" aria-label="Toggle theme"></button>
+    </div>
+  </nav>
+
+  <!-- Main Login Container -->
+  <div class="page-wrapper">
+    <div class="login-container">
+      <div class="glass-card login-card fade-in">
+
+        <!-- Logo + Title -->
+        <div class="login-logo-area">
+          <div class="login-logo">🧠</div>
+          <h1 class="login-title neon-text">NEXUS STUDY</h1>
+          <p class="login-subtitle">AI-Powered Smart Schedule Generator</p>
+        </div>
+
+        <div class="login-divider"></div>
+
+        <!-- Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+
+          <!-- Name Field -->
+          <div class="form-group">
+            <label class="form-label" for="userName">
+              <span>👤</span> Full Name
+            </label>
+            <input
+              type="text"
+              id="userName"
+              class="form-input"
+              placeholder="Enter your name"
+              autocomplete="off"
+              required
+            />
+          </div>
+
+          <!-- Email or Phone Field -->
+          <div class="form-group">
+            <label class="form-label" for="userContact">
+              <span>📱</span> Email or Mobile Number
+            </label>
+            <input
+              type="text"
+              id="userContact"
+              class="form-input"
+              placeholder="Enter email or phone number"
+              autocomplete="off"
+              required
+            />
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn-primary w-full mt-16" style="font-size: 0.9rem; padding: 16px;">
+            🚀 START PLANNING
+          </button>
+        </form>
+
+        <!-- Footer Note -->
+        <p style="text-align: center; margin-top: 24px; font-size: 0.78rem; color: var(--text-muted);">
+          No account needed — your data stays on your device.
+          <span style="color: var(--neon-cyan); font-family: var(--font-mono);">[ LocalStorage ]</span>
+        </p>
+
+        <!-- Features Row -->
+        <div class="flex-center gap-16 mt-24" style="flex-wrap: wrap;">
+          <div class="badge badge-cyan">⚡ AI Scheduling</div>
+          <div class="badge badge-purple">🎮 Brain Games</div>
+          <div class="badge badge-green">📊 Progress Tracking</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Main Script -->
+  <script src="script.js"></script>
+
+  <script>
+    // ── Login Logic ──
+
+    /**
+     * Handles form submit for login/signup.
+     * Saves user info to LocalStorage, then redirects.
+     */
+    function handleLogin(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('userName').value.trim();
+      const contact = document.getElementById('userContact').value.trim();
+
+      // Basic validation
+      if (!name || !contact) {
+        showToast('Please fill in all fields!', 'error');
+        return;
+      }
+
+      // Validate: email or 10-digit mobile
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+      const isPhone = /^[6-9]\d{9}$/.test(contact);
+
+      if (!isEmail && !isPhone) {
+        showToast('Enter a valid email or 10-digit mobile number.', 'error');
+        return;
+      }
+
+      // Save to LocalStorage
+      const userData = {
+        name: name,
+        contact: contact,
+        joinedAt: new Date().toISOString()
+      };
+      localStorage.setItem('nexus_user', JSON.stringify(userData));
+
+      // Show success toast, then redirect
+      showToast(`Welcome, ${name}! 🎉 Setting up your profile...`, 'success');
+
+      setTimeout(() => {
+        window.location.href = 'setup.html';
+      }, 1500);
+    }
+
+    // ── Check if already logged in ──
+    window.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('nexus_user'));
+      const setup = localStorage.getItem('nexus_setup');
+
+      // If already set up, go to dashboard
+      if (user && setup) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+  </script>
+
+</body>
+</html>
